@@ -17,25 +17,30 @@ const resultLoader = () => {
   return null;
 };
 
-const appRouter = createBrowserRouter([
+const appRouter = createBrowserRouter(
+  [
+    {
+      element: <MainLayout />,
+      id: "main",
+      path: "/",
+      errorElement: <ErrorBoundary />,
+      loader: getCategoriesList,
+      children: [
+        {
+          index: true,
+          element: <CreateQuiz />,
+        },
+        {
+          path: "result",
+          element: <Result />,
+          loader: resultLoader,
+        },
+      ],
+    },
+  ],
   {
-    element: <MainLayout />,
-    id: "main",
-    path: "/",
-    errorElement: <ErrorBoundary />,
-    loader: getCategoriesList,
-    children: [
-      {
-        index: true,
-        element: <CreateQuiz />,
-      },
-      {
-        path: "result",
-        element: <Result />,
-        loader: resultLoader,
-      },
-    ],
-  },
-]);
+    basename: "/quiz-app/",
+  }
+);
 
 export default appRouter;
