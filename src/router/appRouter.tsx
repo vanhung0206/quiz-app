@@ -39,7 +39,7 @@ const appRouter = createBrowserRouter(
     },
   ],
   {
-    basename: "/quiz-app/",
+    basename: "/quiz-app",
   }
 );
 
