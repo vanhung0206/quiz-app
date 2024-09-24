@@ -1,4 +1,4 @@
-export interface IQuestionsListResponse {
+export interface IQuestionListResponse {
   results: IQuestionItemResponse[];
   response_code: number;
 }
@@ -16,11 +16,11 @@ export interface IQuestionItemState extends IQuestionItemResponse {
   selected_answer?: string;
 }
 
-export interface ICategoriesListResponse {
-  trivia_categories: ICategoriesItemResponse[];
+export interface ICategoryListResponse {
+  trivia_categories: ICategoryItemResponse[];
 }
 
-export interface ICategoriesItemResponse {
+export interface ICategoryItemResponse {
   id: number;
   name: string;
 }

@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import { BaseButtonProps } from "antd/es/button/button";
+import React from "react";
 
 export interface IAnswerProps {
   value: string;
@@ -9,7 +10,7 @@ export interface IAnswerProps {
 }
 
 const Answer = (props: IAnswerProps) => {
-  const getTypeButton = (): BaseButtonProps["type"] => {
+  const getButtonType = (): BaseButtonProps["type"] => {
     if (
       props.type === "selected" ||
       props.type === "correct" ||
@@ -20,6 +21,19 @@ const Answer = (props: IAnswerProps) => {
     return "default";
   };
 
+  const getButtonBackgroundColor =
+    (): React.CSSProperties["backgroundColor"] => {
+      if (props.type === "correct") {
+        return "green";
+      }
+
+      if (props.type === "incorrect") {
+        return "red";
+      }
+
+      return undefined;
+    };
+
   const onClickButton = () => {
     if (props.disable) {
       return;
@@ -28,18 +42,17 @@ const Answer = (props: IAnswerProps) => {
     props.onClick(props.value);
   };
 
+  const buttonStyle: React.CSSProperties = {
+    pointerEvents: props.disable ? "none" : undefined,
+    backgroundColor: getButtonBackgroundColor(),
+  };
+
   return (
     <Button
-      type={getTypeButton()}
+      type={getButtonType()}
       danger={props.type === "incorrect"}
       onClick={onClickButton}
-      style={
-        props.disable
-          ? {
-              pointerEvents: "none",
-            }
-          : undefined
-      }
+      style={buttonStyle}
     >
       <span dangerouslySetInnerHTML={{ __html: props.value }} />
     </Button>

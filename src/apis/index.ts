@@ -1,24 +1,24 @@
 import axios from "axios";
 import {
-  ICategoriesListResponse,
-  IQuestionsListResponse,
+  ICategoryListResponse,
+  IQuestionListResponse,
   IQuizMakerParam,
-} from "../../types";
+} from "../types";
 const BASE_URL = "https://opentdb.com";
 
-export const getCategoriesList = async (): Promise<ICategoriesListResponse> => {
-  const { data } = await axios.get<ICategoriesListResponse>(
+export const getCategoryList = async (): Promise<ICategoryListResponse> => {
+  const { data } = await axios.get<ICategoryListResponse>(
     `${BASE_URL}/api_category.php`
   );
 
   return data;
 };
 
-export const getQuestionsList = async (
+export const getQuestionList = async (
   { categorySelect, difficultySelect }: IQuizMakerParam,
   amount: number = 5
-): Promise<IQuestionsListResponse> => {
-  const response = await axios.get<IQuestionsListResponse>(
+): Promise<IQuestionListResponse> => {
+  const response = await axios.get<IQuestionListResponse>(
     `${BASE_URL}/api.php?amount=${amount}&category=${categorySelect}&difficulty=${difficultySelect}&type=multiple`
   );
   return response.data;

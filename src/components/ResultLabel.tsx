@@ -1,11 +1,11 @@
 import { Typography } from "antd";
-import { BackgroundResultColor } from "../../types";
+import { BackgroundResultColor } from "../types";
 import { useGlobalStore } from "../store";
 
 const { Title } = Typography;
 
 const ResultLabel = () => {
-  const questionsList = useGlobalStore((state) => state.questionsList);
+  const questionsList = useGlobalStore((state) => state.questionList);
 
   const numberOfCorrectedAnswer = questionsList.reduce<number>(
     (result, value) => {
@@ -18,7 +18,7 @@ const ResultLabel = () => {
     0
   );
 
-  const renderBackground = (): BackgroundResultColor => {
+  const getBackgroundColor = (): BackgroundResultColor => {
     if (numberOfCorrectedAnswer <= 1) {
       return "red";
     }
@@ -34,7 +34,7 @@ const ResultLabel = () => {
     <Title
       level={3}
       style={{
-        background: renderBackground(),
+        background: getBackgroundColor(),
         padding: "0 10px",
       }}
     >

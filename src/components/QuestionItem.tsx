@@ -1,5 +1,5 @@
 import { Space, Typography } from "antd";
-import { IQuestionItemState } from "../../types";
+import { IQuestionItemState } from "../types";
 import Answer, { IAnswerProps } from "./Answer";
 import { memo, useMemo } from "react";
 

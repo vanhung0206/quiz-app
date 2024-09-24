@@ -9,7 +9,7 @@ interface IQuestionListProps {
 }
 
 const QuestionList = (props: IQuestionListProps) => {
-  const questionList = useGlobalStore((state) => state.questionsList);
+  const questionList = useGlobalStore((state) => state.questionList);
   const setQuestionList = useGlobalStore((state) => state.setQuestionList);
   const navigate = useNavigate();
   const isShowSubmitButton = questionList.every(
