@@ -1,12 +1,7 @@
 import type { CountdownProps } from "antd";
 import { Button, notification, Statistic, Typography } from "antd";
 import { useLayoutEffect } from "react";
-import {
-  useLocation,
-  useNavigate,
-  useNavigation,
-  useParams,
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import QuestionList from "../components/QuestionList";
 import QuizMakerForm from "../components/QuizMakerForm";
