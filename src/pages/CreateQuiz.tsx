@@ -1,17 +1,44 @@
-import { Typography } from "antd";
+import type { CountdownProps } from "antd";
+import { Button, notification, Statistic, Typography } from "antd";
+import { useLayoutEffect } from "react";
+import {
+  useLocation,
+  useNavigate,
+  useNavigation,
+  useParams,
+} from "react-router-dom";
+import Loading from "../components/Loading";
 import QuestionList from "../components/QuestionList";
 import QuizMakerForm from "../components/QuizMakerForm";
 import { useGlobalStore } from "../store";
-import Loading from "../components/Loading";
-import { useLayoutEffect } from "react";
+
+import "./CreateQuiz.style.css";
+
 const { Title } = Typography;
+const { Countdown } = Statistic;
 
 const CreateQuiz = () => {
   const questionListStatus = useGlobalStore(
     (state) => state.questionListStatus
   );
 
+  const config = useGlobalStore((state) => state.config);
+
   const resetStore = useGlobalStore((state) => state.resetStore);
+
+  const navigate = useNavigate();
+
+  const onFinish: CountdownProps["onFinish"] = () => {
+    console.log("finished!");
+    notification.info({
+      message: "Time out",
+    });
+    navigate("/result");
+  };
+
+  const onClickSubmit = () => {
+    navigate("/result");
+  };
 
   useLayoutEffect(() => {
     resetStore();
@@ -35,7 +62,29 @@ const CreateQuiz = () => {
     <>
       <Title level={2}>QUIZ MAKER</Title>
       <QuizMakerForm />
-      {renderQuestionList()}
+      {questionListStatus === "Loaded" && (
+        <div className="question">
+          <div className="question__render">{renderQuestionList()}</div>
+          <div className="question__timer">
+            <div className="question__countdown">
+              <Countdown
+                title="Time"
+                style={{ color: "#fff" }}
+                value={Date.now() + 1000 * 60 * config.totalTime}
+                onFinish={onFinish}
+              />
+              <Button
+                onClick={onClickSubmit}
+                style={{ marginTop: 20 }}
+                size="large"
+                block
+              >
+                SUBMIT
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -1,0 +1,18 @@
+.question {
+    display: flex;
+    gap: 30px;
+}
+
+.question .ant-statistic-title {
+    color: #e85f5f;
+    font-size: 20px;
+}
+
+.question .ant-statistic-content-value {
+    color: #fff;
+}
+
+.question .question__countdown {
+    position: sticky;
+    top: 100px
+}
