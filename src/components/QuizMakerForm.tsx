@@ -1,43 +1,60 @@
-import { App, Button, Form, Select, Space } from "antd";
-import { DefaultOptionType } from "antd/es/select";
+import { App, Button, Form, InputNumber, Space, Switch } from "antd";
 import { AxiosError } from "axios";
-import { useMemo } from "react";
-import { useRouteLoaderData } from "react-router-dom";
-import { ICategoryListResponse, IQuizMakerParam } from "../types";
-import { getQuestionList } from "../apis";
-import { LEVEL_LIST } from "../constants";
 import { useGlobalStore } from "../store";
+import { IConfig, IQuestionItemState } from "../types";
+import data from "../data.json";
+import { useEffect } from "react";
+
+function getRandomElements<T>(array: T[], n: number): T[] {
+  const shuffled = [...array]; // Tạo bản sao của mảng gốc
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); // Chọn chỉ số ngẫu nhiên
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Hoán đổi vị trí
+  }
+
+  // Nếu n lớn hơn độ dài của mảng, trả về toàn bộ mảng đã trộn
+  return shuffled.slice(0, Math.min(n, array.length));
+}
 
 const QuizMakerForm = () => {
-  const categoryListResponse = useRouteLoaderData(
-    "main"
-  ) as ICategoryListResponse;
-
-  const setQuestionList = useGlobalStore((state) => state.setQuestionList);
   const setQuestionListStatus = useGlobalStore(
     (state) => state.setQuestionListStatus
   );
+  const questionListStatus = useGlobalStore(
+    (state) => state.questionListStatus
+  );
+  const setQuestionList = useGlobalStore((state) => state.setQuestionList);
+
+  const [form] = Form.useForm();
+
+  const setConfig = useGlobalStore((state) => state.setConfig);
+  const config = useGlobalStore((state) => state.config);
 
   const { notification } = App.useApp();
 
-  const categoryList = useMemo<DefaultOptionType[]>(() => {
-    if (!categoryListResponse?.trivia_categories) return [];
-    return categoryListResponse.trivia_categories.map((item) => ({
-      value: item.id,
-      label: item.name,
-    }));
-  }, [categoryListResponse]);
-
-  const onFinish = async (quizMakerParam: IQuizMakerParam) => {
+  const onFinish = async (quizMakerParam: IConfig) => {
+    console.log("🚀 ~ onFinish ~ quizMakerParam:", quizMakerParam);
     try {
       notification.destroy();
-      setQuestionListStatus("Loading");
-      const questionList = await getQuestionList(quizMakerParam);
-      setQuestionList(questionList.results);
       setQuestionListStatus("Loaded");
+      setConfig(quizMakerParam);
+      if (quizMakerParam.random) {
+        setQuestionList(
+          getRandomElements(
+            data as IQuestionItemState[],
+            quizMakerParam.numberOfQuestion
+          )
+        );
+      } else {
+        setQuestionList(
+          (data as IQuestionItemState[]).slice(
+            0,
+            quizMakerParam.numberOfQuestion
+          )
+        );
+      }
     } catch (error) {
       setQuestionListStatus("None");
-      setQuestionList([]);
       const errorObject = error as Error | AxiosError;
       const errorMessage = errorObject?.message || "Something went wrong!";
       notification.error({
@@ -48,38 +65,57 @@ const QuizMakerForm = () => {
     }
   };
 
+  useEffect(() => {
+    form.resetFields(); // Reset the form to the new initial values
+  }, [config, form]);
+
   return (
-    <Form onFinish={onFinish}>
+    <Form
+      onFinish={onFinish}
+      disabled={questionListStatus === "Loaded"}
+      initialValues={config}
+      form={form}
+    >
       <Space wrap>
         <Form.Item
-          name="categorySelect"
-          rules={[{ required: true, message: "Please select category!" }]}
+          label="Number of question"
+          name="numberOfQuestion"
+          rules={[
+            { required: true, message: "Please enter number of question!" },
+          ]}
         >
-          <Select
-            placeholder="Select a category"
-            options={categoryList}
-            style={{ width: 400 }}
+          <InputNumber
+            placeholder="Enter number of question"
+            style={{ width: 200 }}
             size="large"
-            id="categorySelect"
           />
         </Form.Item>
         <Form.Item
-          name="difficultySelect"
-          rules={[{ required: true, message: "Please select difficulty!" }]}
+          label="Total time"
+          name="totalTime"
+          rules={[{ required: true, message: "Please enter total time!" }]}
         >
-          <Select
-            placeholder="Select difficulty"
-            options={LEVEL_LIST}
+          <InputNumber
+            placeholder="Enter total time"
             style={{ width: 200 }}
-            id="difficultySelect"
             size="large"
           />
         </Form.Item>
-        <Form.Item>
-          <Button id="createBtn" type="default" htmlType="submit" size="large">
-            Create
-          </Button>
+        <Form.Item label="Random" name={"random"}>
+          <Switch />
         </Form.Item>
+        {questionListStatus !== "Loaded" && (
+          <Form.Item>
+            <Button
+              id="createBtn"
+              type="default"
+              htmlType="submit"
+              size="large"
+            >
+              Create
+            </Button>
+          </Form.Item>
+        )}
       </Space>
     </Form>
   );

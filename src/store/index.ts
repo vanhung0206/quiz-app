@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { IQuestionItemState } from "../types";
+import { IConfig, IQuestionItemState } from "../types";
 
 type Patch<T> = T | ((prevState: T) => T);
 
@@ -10,6 +10,9 @@ interface IGlobalState {
   setQuestionListStatus: (
     questionListStatus: "None" | "Loading" | "Loaded"
   ) => void;
+  config: IConfig;
+  setConfig: (patch: Patch<IConfig>) => void;
+
   resetStore: () => void;
 }
 
@@ -17,6 +20,12 @@ const getInitialState = () => {
   return {
     questionListStatus: "None",
     questionList: [] as IQuestionItemState[],
+     
+    config: {
+      numberOfQuestion: 45,
+      totalTime: 45,
+      random: false,
+    }
   } as const;
 };
 
@@ -29,5 +38,11 @@ export const useGlobalStore = create<IGlobalState>()((set) => ({
     })),
   setQuestionListStatus: (questionListStatus) =>
     set(() => ({ questionListStatus })),
+
+  setConfig: (patch) =>
+    set((prevState) => ({
+      config:
+        patch instanceof Function ? patch(prevState.config) : patch,
+    })),
   resetStore: () => set(() => ({ ...getInitialState() })),
 }));

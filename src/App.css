@@ -6,7 +6,7 @@
 * {
   margin: 0;
   padding: 0;
-  font: inherit;
+  font: inherit; 
 }
 
 body {
@@ -15,6 +15,26 @@ body {
   font-size: 16px;
   line-height: 1;
 
-  background-color: #0093e9;
-  background-image: linear-gradient(160deg, #0093e9 0%, #80d0c7 100%);
+  background-color: #121212;
+  color: #ffffff;
+}
+
+h2, h4 {
+  color: #ffffff !important;
+}
+
+h4 {
+  margin-bottom: 0 !important;
+}
+
+input:disabled, button:disabled {
+  color: #ffffff !important;
+}
+
+.ant-form-item-label label {
+  color: #fff !important;
+}
+
+.ant-switch-inner {
+  background-color: #0958d9d6 !important;
 }

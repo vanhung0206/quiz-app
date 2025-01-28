@@ -5,7 +5,7 @@ import React from "react";
 export interface IAnswerProps {
   value: string;
   onClick: (value: string) => void;
-  type?: "selected" | "correct" | "incorrect";
+  type?: "selected" | "correct" | "incorrect" | "answer";
   disable?: boolean;
 }
 
@@ -31,6 +31,10 @@ const Answer = (props: IAnswerProps) => {
         return "red";
       }
 
+      if (props.type === "answer") {
+        return "orange";
+      }
+
       return undefined;
     };
 
@@ -45,6 +49,10 @@ const Answer = (props: IAnswerProps) => {
   const buttonStyle: React.CSSProperties = {
     pointerEvents: props.disable ? "none" : undefined,
     backgroundColor: getButtonBackgroundColor(),
+    fontSize: 14,
+    whiteSpace: "wrap",
+    height: "unset",
+    textAlign: "left",
   };
 
   return (
@@ -53,8 +61,12 @@ const Answer = (props: IAnswerProps) => {
       danger={props.type === "incorrect"}
       onClick={onClickButton}
       style={buttonStyle}
+      block
     >
-      <span dangerouslySetInnerHTML={{ __html: props.value }} />
+      <span
+        style={{ display: "block" }}
+        dangerouslySetInnerHTML={{ __html: props.value }}
+      />
     </Button>
   );
 };

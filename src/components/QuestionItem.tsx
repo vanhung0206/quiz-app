@@ -12,6 +12,11 @@ interface IQuestionItemProps {
   isShowResult?: boolean;
 }
 
+const checkAnswer = (value: string, corrected_answer: string[]): boolean => {
+  const answerKey = value.split(".")[0].trim();
+  return corrected_answer?.includes(answerKey);
+};
+
 const shuffleArray = (array: string[]) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -23,28 +28,29 @@ const shuffleArray = (array: string[]) => {
 
 const QuestionItem = (props: IQuestionItemProps) => {
   const answerList = useMemo<string[]>(() => {
-    const answerList = [
-      ...props.questionItem.incorrect_answers,
-      props.questionItem.correct_answer,
-    ];
+    const answerList = [...props.questionItem.answers];
     shuffleArray(answerList);
 
     return answerList;
-  }, [props.questionItem.incorrect_answers, props.questionItem.correct_answer]);
+  }, [props.questionItem.answers]);
 
   const onClickAnswer = (value: string) => {
     props.onSelectAnswer(value, props.index);
   };
 
   const getStatusAnswer = (value: string): IAnswerProps["type"] => {
-    const { correct_answer, selected_answer } = props.questionItem;
+    const { corrected_answer, selected_answer } = props.questionItem;
     if (props.isShowResult) {
       if (value === selected_answer) {
-        if (value === correct_answer) {
-          return "correct";
+        if (checkAnswer(value, corrected_answer)) {
+          return "answer";
         }
 
         return "incorrect";
+      }
+
+      if (checkAnswer(value, corrected_answer)) {
+        return "correct";
       }
 
       return undefined;
@@ -58,9 +64,11 @@ const QuestionItem = (props: IQuestionItemProps) => {
   };
 
   return (
-    <div style={{ maxWidth: 700, marginBottom: 16 }}>
+    <div style={{ maxWidth: 1200, marginBottom: 16 }}>
       <Title level={3}>
+        <h4>Question Number: {props.questionItem.question_number}</h4>
         <span
+          style={{ color: "#fff", fontSize: 16 }}
           dangerouslySetInnerHTML={{ __html: props.questionItem.question }}
         />
       </Title>
@@ -75,6 +83,16 @@ const QuestionItem = (props: IQuestionItemProps) => {
           />
         ))}
       </Space>
+      {props.isShowResult && (
+        <div>
+          <h4 style={{ marginTop: 16, fontSize: 16 }}>
+            Created At: {props.questionItem.created_at}
+          </h4>
+          {/* <h4>
+            Created At: {props.questionItem.created_at}
+          </h4> */}
+        </div>
+      )}
     </div>
   );
 };

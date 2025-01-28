@@ -1,8 +1,6 @@
-import { Button } from "antd";
 import { useCallback } from "react";
 import { useGlobalStore } from "../store";
 import QuestionItem from "./QuestionItem";
-import { useNavigate } from "react-router-dom";
 
 interface IQuestionListProps {
   isShowResult?: boolean;
@@ -11,14 +9,6 @@ interface IQuestionListProps {
 const QuestionList = (props: IQuestionListProps) => {
   const questionList = useGlobalStore((state) => state.questionList);
   const setQuestionList = useGlobalStore((state) => state.setQuestionList);
-  const navigate = useNavigate();
-  const isShowSubmitButton = questionList.every(
-    (item) => !!item.selected_answer
-  );
-
-  const onClickSubmit = () => {
-    navigate("/result");
-  };
 
   const onSelectAnswer = useCallback(
     (value: string, index: number) => {
@@ -27,7 +17,11 @@ const QuestionList = (props: IQuestionListProps) => {
         const selectedItem = {
           ...newQuestionList[index],
         };
-        selectedItem.selected_answer = value;
+        if (selectedItem.selected_answer === value) {
+          selectedItem.selected_answer = undefined;
+        } else {
+          selectedItem.selected_answer = value;
+        }
         newQuestionList[index] = selectedItem;
         return newQuestionList;
       });
@@ -47,29 +41,7 @@ const QuestionList = (props: IQuestionListProps) => {
     ));
   };
 
-  const renderSubmitButton = () => {
-    if (props.isShowResult || !isShowSubmitButton) {
-      return null;
-    }
-
-    return (
-      <Button
-        onClick={onClickSubmit}
-        style={{ marginTop: 20 }}
-        size="large"
-        block
-      >
-        SUBMIT
-      </Button>
-    );
-  };
-
-  return (
-    <div>
-      {renderQuestionItem()}
-      {renderSubmitButton()}
-    </div>
-  );
+  return <div>{renderQuestionItem()}</div>;
 };
 
 export default QuestionList;
