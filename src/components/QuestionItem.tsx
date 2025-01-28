@@ -1,7 +1,8 @@
 import { Space, Typography } from "antd";
-import { IQuestionItemState } from "../types";
-import Answer, { IAnswerProps } from "./Answer";
 import { memo, useMemo } from "react";
+import { IQuestionItemState } from "../types";
+import { checkAnswer } from "../utils";
+import Answer, { IAnswerProps } from "./Answer";
 
 const { Title } = Typography;
 
@@ -11,11 +12,6 @@ interface IQuestionItemProps {
   onSelectAnswer: (value: string, index: number) => void;
   isShowResult?: boolean;
 }
-
-const checkAnswer = (value: string, corrected_answer: string[]): boolean => {
-  const answerKey = value.split(".")[0].trim();
-  return corrected_answer?.includes(answerKey);
-};
 
 const shuffleArray = (array: string[]) => {
   for (let i = array.length - 1; i > 0; i--) {
