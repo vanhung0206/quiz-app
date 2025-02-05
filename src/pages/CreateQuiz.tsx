@@ -1,5 +1,5 @@
 import type { CountdownProps } from "antd";
-import { Button, notification, Statistic, Typography } from "antd";
+import { Button, Modal, notification, Statistic, Typography } from "antd";
 import { useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
@@ -32,7 +32,17 @@ const CreateQuiz = () => {
   };
 
   const onClickSubmit = () => {
-    navigate("/result");
+    Modal.confirm({
+      title: "Are you sure you want to submit your exam?",
+      content:
+        "You won’t be able to review or change your answers after submission.",
+      okText: "Submit",
+      okType: "primary",
+      cancelText: "Cancel",
+      onOk() {
+        navigate("/result");
+      },
+    });
   };
 
   useLayoutEffect(() => {
@@ -55,7 +65,7 @@ const CreateQuiz = () => {
 
   return (
     <>
-      <Title level={2}>QUIZ MAKER</Title>
+      <Title level={2}>AWS Certified Developer - Associate DVA-C02</Title>
       <QuizMakerForm />
       {questionListStatus === "Loaded" && (
         <div className="question">

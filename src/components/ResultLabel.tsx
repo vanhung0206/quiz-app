@@ -1,7 +1,7 @@
 import { Typography } from "antd";
 import { BackgroundResultColor } from "../types";
 import { useGlobalStore } from "../store";
-import { checkAnswer } from "../utils";
+import { checkAnswers } from "../utils";
 
 const { Title } = Typography;
 
@@ -11,7 +11,7 @@ const ResultLabel = () => {
   const numberOfCorrectedAnswer = questionsList.reduce<number>(
     (result, value) => {
       let currentResult = result;
-      if (checkAnswer(value.selected_answer, value.corrected_answer)) {
+      if (checkAnswers(value.selected_answers, value.corrected_answer)) {
         currentResult++;
       }
       return currentResult;

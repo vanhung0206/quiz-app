@@ -4,6 +4,7 @@ import { useGlobalStore } from "../store";
 import { IConfig, IQuestionItemState } from "../types";
 import data from "../data.json";
 import { useEffect } from "react";
+import { shuffleArray } from "../utils";
 
 function getRandomElements<T>(array: T[], n: number): T[] {
   const shuffled = [...array]; // Tạo bản sao của mảng gốc
@@ -36,23 +37,27 @@ const QuizMakerForm = () => {
     console.log("🚀 ~ onFinish ~ quizMakerParam:", quizMakerParam);
     try {
       notification.destroy();
-      setQuestionListStatus("Loaded");
       setConfig(quizMakerParam);
+      let questionList: IQuestionItemState[] = [];
+
       if (quizMakerParam.random) {
-        setQuestionList(
-          getRandomElements(
-            data as IQuestionItemState[],
-            quizMakerParam.numberOfQuestion
-          )
+        questionList = getRandomElements(
+          data as IQuestionItemState[],
+          quizMakerParam.numberOfQuestion
         );
       } else {
-        setQuestionList(
-          (data as IQuestionItemState[]).slice(
-            0,
-            quizMakerParam.numberOfQuestion
-          )
+        questionList = (data as IQuestionItemState[]).slice(
+          0,
+          quizMakerParam.numberOfQuestion
         );
       }
+
+      questionList.forEach((item) => {
+        shuffleArray(item.answers);
+      });
+
+      setQuestionList(questionList);
+      setQuestionListStatus("Loaded");
     } catch (error) {
       setQuestionListStatus("None");
       const errorObject = error as Error | AxiosError;

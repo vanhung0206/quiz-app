@@ -9,6 +9,12 @@ export interface IAnswerProps {
   disable?: boolean;
 }
 
+const renderAnswerText = (value: string): string => {
+  const values = value?.split(".") || [];
+  values.splice(0, 1);
+  return values.join(".");
+};
+
 const Answer = (props: IAnswerProps) => {
   const getButtonType = (): BaseButtonProps["type"] => {
     if (
@@ -65,7 +71,7 @@ const Answer = (props: IAnswerProps) => {
     >
       <span
         style={{ display: "block" }}
-        dangerouslySetInnerHTML={{ __html: props.value }}
+        dangerouslySetInnerHTML={{ __html: renderAnswerText(props.value) }}
       />
     </Button>
   );

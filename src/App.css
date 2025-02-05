@@ -38,3 +38,7 @@ input:disabled, button:disabled {
 .ant-switch-inner {
   background-color: #0958d9d6 !important;
 }
+
+.ant-btn {
+  user-select: text !important;
+}

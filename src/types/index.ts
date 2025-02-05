@@ -15,8 +15,7 @@ export interface IConfig {
 }
 
 export interface IQuestionItemState extends IQuestionItemResponse {
-  selected_answer?: string;
+  selected_answers?: string[];
 }
-
 
 export type BackgroundResultColor = "red" | "yellow" | "green";

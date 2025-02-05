@@ -1,7 +1,7 @@
 import { Space, Typography } from "antd";
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { IQuestionItemState } from "../types";
-import { checkAnswer } from "../utils";
+import { checkIsInCorrectedAnwser } from "../utils";
 import Answer, { IAnswerProps } from "./Answer";
 
 const { Title } = Typography;
@@ -13,46 +13,32 @@ interface IQuestionItemProps {
   isShowResult?: boolean;
 }
 
-const shuffleArray = (array: string[]) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const k = array[i];
-    array[i] = array[j];
-    array[j] = k;
-  }
-};
-
 const QuestionItem = (props: IQuestionItemProps) => {
-  const answerList = useMemo<string[]>(() => {
-    const answerList = [...props.questionItem.answers];
-    shuffleArray(answerList);
-
-    return answerList;
-  }, [props.questionItem.answers]);
+  const answerList = props.questionItem.answers;
 
   const onClickAnswer = (value: string) => {
     props.onSelectAnswer(value, props.index);
   };
 
   const getStatusAnswer = (value: string): IAnswerProps["type"] => {
-    const { corrected_answer, selected_answer } = props.questionItem;
+    const { corrected_answer, selected_answers } = props.questionItem;
     if (props.isShowResult) {
-      if (value === selected_answer) {
-        if (checkAnswer(value, corrected_answer)) {
+      if (selected_answers?.includes(value)) {
+        if (checkIsInCorrectedAnwser(value, corrected_answer)) {
           return "answer";
         }
 
         return "incorrect";
       }
 
-      if (checkAnswer(value, corrected_answer)) {
+      if (checkIsInCorrectedAnwser(value, corrected_answer)) {
         return "correct";
       }
 
       return undefined;
     }
 
-    if (value === selected_answer) {
+    if (selected_answers?.includes(value)) {
       return "selected";
     }
 
